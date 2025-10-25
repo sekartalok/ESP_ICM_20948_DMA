@@ -198,9 +198,11 @@ int ICM20948_DMA::begin(){
     delay(200);
     //init the ICM
     if(!ICM20948_begin()){
+        end();
         return 2;
     }
     if(!magnetor_begin()){
+        end();
         return 3;
     }
 
@@ -238,9 +240,18 @@ int ICM20948_DMA::begin(){
     delay(20);
 
     //dma alloc fail
-    if(!DMASPI){return 4;}
-    if(!dma_rx_buf){return 4;}
-    if(!dma_tx_buf){return 4;}
+    if(!DMASPI){
+        end();
+        return 4;
+    }
+    if(!dma_rx_buf){
+        end();
+        return 4;
+    }
+    if(!dma_tx_buf){
+        end();
+        return 4;
+    }
 
     //check temperture ideal working condition
     float temperture;
@@ -452,6 +463,7 @@ void ICM20948_DMA::acc_dlpf(uint8_t dlpf){
         temp |= (dlpf << 3);
 
     }else{
+        disable_divider_acc_var = true;
         temp &= 0xFE;
     }
     write8(2,0x14,temp);
@@ -466,6 +478,7 @@ void ICM20948_DMA::gyr_dlpf(uint8_t dlpf){
         temp |= (dlpf << 3);
 
     }else{
+        disable_divider_gyr_var = true;
         temp &= 0xFE;
     }
     write8(2,0x01,temp);
