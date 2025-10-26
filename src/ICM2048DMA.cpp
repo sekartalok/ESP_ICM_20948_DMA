@@ -193,6 +193,9 @@ void ICM20948_DMA::enable_acc(bool con){
 */
 
 int ICM20948_DMA::begin(){
+    if(!SPI){
+        return 2;
+    }
     SPI->begin(scl_pin, ado_pin, sda_pin, cs_pin);
     spi_setting = SPISettings(1000000, MSBFIRST, SPI_MODE0);
     delay(200);
