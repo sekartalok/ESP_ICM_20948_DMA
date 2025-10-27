@@ -1,4 +1,4 @@
-#include "ICM2048DMA.h"
+#include "ICM20948DMA.h"
 
 ICM20948_DMA::ICM20948_DMA(int scl,int ado,int sda,int cs): scl_pin(scl), ado_pin(ado), sda_pin(sda), cs_pin(cs){
     pinMode(cs_pin, OUTPUT);

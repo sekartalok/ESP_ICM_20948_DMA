@@ -3,7 +3,7 @@
 
 #ifndef XYZ_FLOAT_H_
 #define XYZ_FLOAT_H_
-#include <xyzFloat.h>
+#include "xyzFloat/xyzFloat.h"
 struct xyzFloat {
     float x;
     float y;
