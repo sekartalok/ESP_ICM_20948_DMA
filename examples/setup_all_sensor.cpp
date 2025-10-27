@@ -10,11 +10,15 @@
 #define INT  48
 ICM20948_DMA ICM(SCL, ADO, SDA, NCS);
 volatile bool ready = false;
+//mutex for safety for securing the IRAM_ATTR
+portMUX_TYPE portMUX0 = portMUX_INITIALIZER_UNLOCKED;
 
 
 
 void IRAM_ATTR Testinterupt(){
+  portENTER_CRITICAL_ISR(&portMUX0);
   ready = true;
+  portEXIT_CRITICAL_ISR(&portMUX0);
 }
 void sensor_read();
 void setup() {
@@ -146,7 +150,7 @@ void setup() {
 
     */
   int test = ICM.begin();
-  if(test!=0){
+  if(test==2){
     Serial.print("SENSOR FAIL : ");
     Serial.println(test);
     while(1);
@@ -164,14 +168,17 @@ void loop() {
 
   if(ready){
     // FOR BETTER STABILITY IS GOOD TO USE BOTH clear_int before and after prosses or sensor read
-
+    portENTER_CRITICAL_ISR(&portMUX0);
+    ready = false;
+     portEXIT_CRITICAL_ISR(&portMUX0);
     //ICM.clear_int();  //clear on read for fast prosses cycle
     ICM.sensor_read();
     sensor_read();
     ICM.clear_int();   //clear on last for long proses cycle
+   
 
     
-    ready = false;
+   
   }
 
  
