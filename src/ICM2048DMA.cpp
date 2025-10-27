@@ -193,9 +193,11 @@ void ICM20948_DMA::enable_acc(bool con){
 */
 
 int ICM20948_DMA::begin(){
+    
     if(!SPI){
         return 2;
     }
+
     SPI->begin(scl_pin, ado_pin, sda_pin, cs_pin);
     spi_setting = SPISettings(1000000, MSBFIRST, SPI_MODE0);
     delay(200);
@@ -222,11 +224,11 @@ int ICM20948_DMA::begin(){
     acc_dlpf(dlpf_acc_var);
     gyr_dlpf(dlpf_gyr_var);
 
-    if(!disable_divider_acc_var){
+    if((!disable_divider_acc_var) && (dlpf_acc_var != 8)){
         acc_data_divider(divider_acc_var);
     }
 
-    if(!disable_divider_gyr_var){
+    if((!disable_divider_gyr_var) && (dlpf_gyr_var != 8)){
         gyr_data_divider(divider_gyr_var);
     }
 
@@ -466,7 +468,6 @@ void ICM20948_DMA::acc_dlpf(uint8_t dlpf){
         temp |= (dlpf << 3);
 
     }else{
-        disable_divider_acc_var = true;
         temp &= 0xFE;
     }
     write8(2,0x14,temp);
@@ -481,7 +482,6 @@ void ICM20948_DMA::gyr_dlpf(uint8_t dlpf){
         temp |= (dlpf << 3);
 
     }else{
-        disable_divider_gyr_var = true;
         temp &= 0xFE;
     }
     write8(2,0x01,temp);
