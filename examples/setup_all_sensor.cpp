@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "ICM2048DMA.h"
+#include "ICM20948DMA.h"
 
 
 //test pin

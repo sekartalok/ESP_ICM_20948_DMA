@@ -28,8 +28,8 @@ HAPPY CODING ▼・ᴗ・▼
 
 #define ICM_20948_DMA
 #include <Arduino.h>  
-#include "xyzFloat.h"
-#include "ESP32DMASPIMaster.h"
+#include "xyzFloat/xyzFloat.h"
+#include "DMA_master/ESP32DMASPIMaster.h"
 
 // user interface api
 typedef enum AK09916_OP_MODE {
