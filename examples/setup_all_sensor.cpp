@@ -7,6 +7,7 @@
 #define SDA  35
 #define NCS  34
 #define ADO  36
+#define INT  48
 ICM20948_DMA ICM(SCL, ADO, SDA, NCS);
 volatile bool ready = false;
 
@@ -68,8 +69,9 @@ void setup() {
    *    7              473.0               1125/(1+ASRD) (default)
    *    OFF           1209.0               4500
    *    
-   *    ASRD = Accelerometer Sample Rate Divider (0...4095)
+   *    ASRD = Accelerometer Sample Rate Divider (0...4095) 
    *    You achieve lowest noise using level 6  
+   *    DATA DIVIDER WILL DISABLE WHEN YOU TURN OFF THIS FEATURE
    */
   ICM.set_acc_dlpf(ICM20948_DLPF_7);
 
@@ -110,6 +112,7 @@ void setup() {
    *    
    *    GSRD = Gyroscope Sample Rate Divider (0...255)
    *    You achieve lowest noise using level 6  
+   *    DATA DIVIDER WILL DISABLE WHEN YOU TURN OFF THIS FEATURE
    */
   ICM.set_gyr_dlpf(ICM20948_DLPF_0);
 
@@ -143,12 +146,15 @@ void setup() {
 
     */
   int test = ICM.begin();
-  if(!test==0){
+  if(test!=0){
     Serial.print("SENSOR FAIL : ");
     Serial.println(test);
     while(1);
+  }else{
+    Serial.println("SENSOR WORKING");
   }
-
+  // enable your esp interrupt 
+   attachInterrupt(digitalPinToInterrupt(INT), Testinterupt, RISING);
   // this code must run after begin();
   ICM.clear_int();
 
@@ -157,9 +163,15 @@ void setup() {
 void loop() {
 
   if(ready){
-    ICM.clear_int();
+    // FOR BETTER STABILITY IS GOOD TO USE BOTH clear_int before and after prosses or sensor read
+
+    //ICM.clear_int();  //clear on read for fast prosses cycle
+    ICM.sensor_read();
     sensor_read();
-    ICM.clear_int();
+    ICM.clear_int();   //clear on last for long proses cycle
+
+    
+    ready = false;
   }
 
  
@@ -171,7 +183,7 @@ void sensor_read(){
   xyzFloat gyr;
   xyzFloat mag;
   float temperture;
-  ICM.sensor_read();
+  
   ICM.get_acc_raw(&acc);
   ICM.get_gyro_raw(&gyr);
   ICM.get_magneto_raw(&mag);
@@ -202,4 +214,9 @@ void sensor_read(){
   Serial.print(temperture);
 
 }
+/*
+    THIS PROSSES TAKE ABOUT 1.210ms BEFORE NEXT INTERUPT
+    FOR ONLY SENSOR READ (NOT PROCESSING ANY DATA) it take about 47.60us before next interupt
 
+
+*/
