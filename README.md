@@ -182,3 +182,9 @@ acc.z // to get z value
 ```C++
 (float)get_temperature() // tp get icm temperature sensor
 ```
+
+## GPIO THAT USE FOR TEST:
+
+ <div align="center">
+  <img src="https://github.com/sekartalok/ESP_ICM_20948_DMA/blob/main/resource/ICM%20SENSOR.png" alt="Set_polarity_low" width="300">
+</div>
