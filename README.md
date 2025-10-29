@@ -1,11 +1,15 @@
 # ESP32 LIBRARY FOR ICM20948 WITH ISP DMA
 
-this library for 9-axis ccelerometer, gyroscope and magnetometer ICM20948,
-it utilizing fast direct memory access (DMA) library provided by [hideakitai_DMA](https://github.com/hideakitai/ESP32DMASPI)
-ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime proccesing system
- > [!CAUTION]
- > This code still prototype and have know issue that it still dont have reacycle feature
- > This feature will be implement for future update
+This library is for the **9-axis accelerometer, gyroscope, and magnetometer (ICM20948)**.  
+It utilizes the fast **Direct Memory Access (DMA)** library provided by [hideakitai/ESP32DMASPI](https://github.com/hideakitai/ESP32DMASPI),  
+ensuring high-speed, non-blocking CPU performance and RTOS-friendly operation.  
+
+Perfect for **drones** and other **real-time processing systems**.
+
+> [!CAUTION]
+> This code is still a prototype and has known issues.  
+> The recycle feature is not yet implemented and will be added in a future update.
+
 
  ### Supported ESP32 Version
 
@@ -129,7 +133,7 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
 ```
 ### SENSOR BEGIN
 > [!IMPORTANT]
-> makesure you done with setup because any setup function will not work after this
+> make sure you done with setup because any setup function will not work after this
 
 ##### ERROR CODE AND WHAT IT MEAN
 
@@ -186,5 +190,5 @@ acc.z // to get z value
 ## GPIO THAT USE FOR TEST:
 
  <div align="center">
-  <img src="https://github.com/sekartalok/ESP_ICM_20948_DMA/blob/main/resource/ICM%20SENSOR.png" alt="Set_polarity_low" width="300">
+  <img src="https://github.com/sekartalok/ESP_ICM_20948_DMA/blob/main/resource/ACT%20LOW.png" alt="Set_polarity_low" width="300">
 </div>
