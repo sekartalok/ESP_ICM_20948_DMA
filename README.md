@@ -6,6 +6,14 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
  > [!CAUTION]
  > This code still prototype and have know issue that it still dont have reacycle feature
  > This feature will be implement for future update
+
+ ### Supported ESP32 Version
+
+| IDE         | ESP32 Board Version |
+| ----------- | ------------------- |
+| Arduino IDE | `>= 2.0.11`         |
+| PlatformIO  | `>= 5.0.0`          |
+
  
  ## API
  ### SENSOR SETUP
@@ -41,6 +49,34 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
 | ICM20948_ACC_RANGE_4G            | 4 |
 | ICM20948_ACC_RANGE_8G            | 8 |
  ``` C++
+   set_acc_range(ICM20948_ACC_RANGE_2G);
+
+ ```
+##### set acc dlpf
+| DLPF SETTING | 3dB Bandwidth hz | Output Rate Hz |
+|--------------|------------------|----------------|
+| 0            |  246.0           | 1125/(1+ASRD)  |
+| 1            |  246.0           | 1125/(1+ASRD)  |
+| 2            |  111.4           | 1125/(1+ASRD)  |
+| 3            |   50.4           | 1125/(1+ASRD)  |
+| 4            |   23.9           | 1125/(1+ASRD)  |
+| 5            |   11.5           | 1125/(1+ASRD)  |
+| 6            |    5.7           | 1125/(1+ASRD)  |
+| 7  (default) |  473.0           | 1125/(1+ASRD)  |
+| OFF          | 1209.0           | 4500           |
+
+```C++
+set_acc_dlpf(ICM20948_DLPF_7);
+
+```
+> [!TIP]
+> the data divider will be lock to disable if you turn off the DLPF
+##### set data rate divider
+
+
+
+
+ ``` C++
  //======================================= SETTING ACCELEROMETER =======================================
   /*  ICM20948_ACC_RANGE_2G      2 g   (default)
    *  ICM20948_ACC_RANGE_4G      4 g
@@ -48,7 +84,7 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
    *  ICM20948_ACC_RANGE_16G    16 g
    */
 
-  set_acc_range(ICM20948_ACC_RANGE_2G);
+
 
   /*  Choose a level for the Digital Low Pass Filter or switch it off.  
    *  ICM20948_DLPF_0, ICM20948_DLPF_2, ...... ICM20948_DLPF_7, ICM20948_DLPF_OFF 
@@ -70,7 +106,7 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
    *    You achieve lowest noise using level 6  
    *    DATA DIVIDER WILL DISABLE WHEN YOU TURN OFF THIS FEATURE
    */
-  set_acc_dlpf(ICM20948_DLPF_7);
+  
 
   /*  Acceleration sample rate divider divides the output rate of the accelerometer.
    *  Sample rate = Basic sample rate / (1 + divider) 
@@ -84,5 +120,3 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
   set_acc_data_divider(0);
 
  ```
- > [!TIP]
- > the data divider will be lock to disable if you turn off the DLPF
