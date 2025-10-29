@@ -45,9 +45,9 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
 
 | Range setting                    | G |
 |----------------------            | - |
-| ICM20948_ACC_RANGE_2G (default)  | 2 |
-| ICM20948_ACC_RANGE_4G            | 4 |
-| ICM20948_ACC_RANGE_8G            | 8 |
+| `ICM20948_ACC_RANGE_2G (default)`| 2 |
+| `ICM20948_ACC_RANGE_4G`          | 4 |
+| `ICM20948_ACC_RANGE_8G`          | 8 |
  ``` C++
    set_acc_range(ICM20948_ACC_RANGE_2G);
 
@@ -78,3 +78,49 @@ set_acc_dlpf(ICM20948_DLPF_7);
  ``` C++
   set_acc_data_divider(0);
  ```
+
+ #### gyro setup
+ ##### set gyr range
+
+ | Range setting                       |  degrees per second  |
+ |---------------------------          |----------------------|
+ | `ICM20948_GYRO_RANGE_250 (default)` | 250                  |
+ | `ICM20948_GYRO_RANGE_500`           | 500                  |
+ | `ICM20948_GYRO_RANGE_1000`          | 1000                 |
+ | `ICM20948_GYRO_RANGE_2000`          | 2000                 |
+
+ ```C++ 
+ set_gyr_range(ICM20948_GYRO_RANGE_250);
+ ```
+ ##### set gyr dlpf 
+| DLPF        | 3dB Bandwidth hz   | Output Rate hz   |
+|-------------|--------------------|------------------|
+| 0 (default) |   196.6            | 1125/(1+GSRD)    |
+| 1           |   151.8            | 1125/(1+GSRD)    |
+| 2           |   119.5            | 1125/(1+GSRD)    |
+| 3           |    51.2            | 1125/(1+GSRD)    |
+| 4           |    23.9            | 1125/(1+GSRD)    |
+| 5           |    11.6            | 1125/(1+GSRD)    |
+| 6           |     5.7            | 1125/(1+GSRD)    |
+| 7           |   361.4            | 1125/(1+GSRD)    |
+| OFF         | 12106.0            | 9000             |
+
+```C++
+set_gyr_dlpf(ICM20948_DLPF_0);
+```
+##### set data rate divider
+> [!NOTE]
+> it behave just like the accelerometer
+```C++
+set_gyr_data_divider(0);
+```
+
+ #### magnetometer setup
+| Mode                      | Description                                                                                          |
+|---------------------------|------------------------------------------------------------------------------------------------------|
+| `AK09916_PWR_DOWN`        | Power down to save energy                                                                            |
+| `AK09916_TRIGGER_MODE`    | Measurements on request, a measurement is triggered by calling `setMagOpMode(AK09916_TRIGGER_MODE)`  |
+| `AK09916_CONT_MODE_10HZ`  | Continuous measurements, 10 Hz rate                                                                  |
+| `AK09916_CONT_MODE_20HZ`  | Continuous measurements, 20 Hz rate                                                                  |
+| `AK09916_CONT_MODE_50HZ`  | Continuous measurements, 50 Hz rate                                                                  |
+| `AK09916_CONT_MODE_100HZ` | Continuous measurements, 100 Hz rate (default)                                                       |
