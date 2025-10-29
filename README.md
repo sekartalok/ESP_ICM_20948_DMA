@@ -194,8 +194,8 @@ acc.z // to get z value
 </div>
 
 # OTHER DOCUMENT
--[ICM20948_data_sheet](https://invensense.tdk.com/wp-content/uploads/2016/06/DS-000189-ICM-20948-v1.3.pdf)
--[other_refrence](https://wolles-elektronikkiste.de/en/icm-20948-9-axis-sensor-part-i)
+- [ICM20948_data_sheet](https://invensense.tdk.com/wp-content/uploads/2016/06/DS-000189-ICM-20948-v1.3.pdf)
+- [other_refrence](https://wolles-elektronikkiste.de/en/icm-20948-9-axis-sensor-part-i)
 
 ## License
 
