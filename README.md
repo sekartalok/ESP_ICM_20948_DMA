@@ -17,8 +17,9 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
  ```
  ##### set polarity
 <div align="center">
-  <img src="https://cdn.discordapp.com/attachments/1195732459577417790/1432944490821324872/ACT_HIGH.png?ex=6902e50d&is=6901938d&hm=de68ad532ec34620467dd627b5ae6d210b6e05b535eec3bdf1c29efadaad1d16&" alt="Image description" width="500">
+  <img src="https://cdn.discordapp.com/attachments/1195732459577417790/1432944490821324872/ACT_HIGH.png?ex=6902e50d&is=6901938d&hm=de68ad532ec34620467dd627b5ae6d210b6e05b535eec3bdf1c29efadaad1d16&" alt="Set_polarity_high" width="100">
 </div>
+
  ```C++
    set_polarity_int(ICM20948_ACT_HIGH);
  ```
