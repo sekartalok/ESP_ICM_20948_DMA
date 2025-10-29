@@ -33,7 +33,13 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
 
 
  #### accelerometer setup
+ ##### set acc range
 
+| Range setting                    | G |
+|----------------------            | - |
+| ICM20948_ACC_RANGE_2G (default)  | 2 |
+| ICM20948_ACC_RANGE_4G            | 4 |
+| ICM20948_ACC_RANGE_8G            | 8 |
  ``` C++
  //======================================= SETTING ACCELEROMETER =======================================
   /*  ICM20948_ACC_RANGE_2G      2 g   (default)
