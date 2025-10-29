@@ -25,14 +25,14 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
  ```
  ##### set polarity
 <div align="center">
-  <img src="https://cdn.discordapp.com/attachments/1195732459577417790/1432944490821324872/ACT_HIGH.png?ex=6902e50d&is=6901938d&hm=de68ad532ec34620467dd627b5ae6d210b6e05b535eec3bdf1c29efadaad1d16&" alt="Set_polarity_high" width="300">
+  <img src="https://github.com/sekartalok/ESP_ICM_20948_DMA/blob/main/resource/ACT%20HIGH.png" alt="Set_polarity_high" width="300">
 </div>
 
  ```C++
    set_polarity_int(ICM20948_ACT_HIGH);
  ```
  <div align="center">
-  <img src="https://cdn.discordapp.com/attachments/1195732459577417790/1432945074689413241/ACT_LOW.png?ex=6902e598&is=69019418&hm=0d7f8536bdde30d4867da3d40dffde32e575e06dc8896dc68d9bbd07b49c2ebc&" alt="Set_polarity_low" width="300">
+  <img src="https://github.com/sekartalok/ESP_ICM_20948_DMA/blob/main/resource/ACT%20LOW.png" alt="Set_polarity_low" width="300">
 </div>
 
  ```C++
