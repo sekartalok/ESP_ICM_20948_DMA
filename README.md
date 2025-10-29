@@ -23,6 +23,15 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
  ```C++
    set_polarity_int(ICM20948_ACT_HIGH);
  ```
+ <div align="center">
+  <img src="https://cdn.discordapp.com/attachments/1195732459577417790/1432945074689413241/ACT_LOW.png?ex=6902e598&is=69019418&hm=0d7f8536bdde30d4867da3d40dffde32e575e06dc8896dc68d9bbd07b49c2ebc&" alt="Set_polarity_low" width="300">
+</div>
+
+ ```C++
+   set_polarity_int(ICM20948_ACT_LOW);
+ ```
+
+
  #### accelerometer setup
 
  ``` C++
