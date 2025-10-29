@@ -21,7 +21,7 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
  #### interupt 
  ```C++
 //api to enable data ready interupt ( default is true)
-  enable_interupt(true);
+ (void)enable_interupt(true);
  ```
  ##### set polarity
 <div align="center">
@@ -29,14 +29,14 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
 </div>
 
  ```C++
-   set_polarity_int(ICM20948_ACT_HIGH);
+   (void)set_polarity_int(ICM20948_ACT_HIGH);
  ```
  <div align="center">
   <img src="https://github.com/sekartalok/ESP_ICM_20948_DMA/blob/main/resource/ACT%20LOW.png" alt="Set_polarity_low" width="300">
 </div>
 
  ```C++
-   set_polarity_int(ICM20948_ACT_LOW);
+   (void)set_polarity_int(ICM20948_ACT_LOW);
  ```
 
 
@@ -49,7 +49,7 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
 | `ICM20948_ACC_RANGE_4G`          | 4 |
 | `ICM20948_ACC_RANGE_8G`          | 8 |
  ``` C++
-   set_acc_range(ICM20948_ACC_RANGE_2G);
+   (void)set_acc_range(ICM20948_ACC_RANGE_2G);
 
  ```
 ##### set acc dlpf
@@ -66,7 +66,7 @@ ensuring fast and non blocking cpu and RTOS friendly. good for drone or realtime
 | OFF          | 1209.0           | 4500           |
 
 ```C++
-set_acc_dlpf(ICM20948_DLPF_7);
+(void)set_acc_dlpf(ICM20948_DLPF_7);
 
 ```
 > [!TIP]
@@ -76,7 +76,7 @@ set_acc_dlpf(ICM20948_DLPF_7);
 ![alt text](https://github.com/sekartalok/ESP_ICM_20948_DMA/blob/main/resource/quicklatex.com-30bd3464d130620ec59757d10947b7e5_l3-1.svg)
 
  ``` C++
-  set_acc_data_divider(0);
+(void)set_acc_data_divider(0);
  ```
 
  #### gyro setup
@@ -90,7 +90,7 @@ set_acc_dlpf(ICM20948_DLPF_7);
  | `ICM20948_GYRO_RANGE_2000`          | 2000                 |
 
  ```C++ 
- set_gyr_range(ICM20948_GYRO_RANGE_250);
+(void)set_gyr_range(ICM20948_GYRO_RANGE_250);
  ```
  ##### set gyr dlpf 
 | DLPF        | 3dB Bandwidth hz   | Output Rate hz   |
@@ -106,21 +106,79 @@ set_acc_dlpf(ICM20948_DLPF_7);
 | OFF         | 12106.0            | 9000             |
 
 ```C++
-set_gyr_dlpf(ICM20948_DLPF_0);
+(void)set_gyr_dlpf(ICM20948_DLPF_0);
 ```
 ##### set data rate divider
 > [!NOTE]
 > it behave just like the accelerometer
 ```C++
-set_gyr_data_divider(0);
+(void)set_gyr_data_divider(0);
 ```
 
  #### magnetometer setup
 | Mode                      | Description                                                                                          |
 |---------------------------|------------------------------------------------------------------------------------------------------|
 | `AK09916_PWR_DOWN`        | Power down to save energy                                                                            |
-| `AK09916_TRIGGER_MODE`    | Measurements on request, a measurement is triggered by calling `setMagOpMode(AK09916_TRIGGER_MODE)`  |
+| `AK09916_TRIGGER_MODE`    | Measurements on request, a measurement is triggered by calling setMagOpMode(AK09916_TRIGGER_MODE)`  |
 | `AK09916_CONT_MODE_10HZ`  | Continuous measurements, 10 Hz rate                                                                  |
 | `AK09916_CONT_MODE_20HZ`  | Continuous measurements, 20 Hz rate                                                                  |
 | `AK09916_CONT_MODE_50HZ`  | Continuous measurements, 50 Hz rate                                                                  |
 | `AK09916_CONT_MODE_100HZ` | Continuous measurements, 100 Hz rate (default)                                                       |
+```C++
+(void)set_mag_mode(AK09916_CONT_MODE_100HZ);
+```
+### SENSOR BEGIN
+> [!IMPORTANT]
+> makesure you done with setup because any setup function will not work after this
+
+##### ERROR CODE AND WHAT IT MEAN
+
+| Error code  |  explanation                   |
+|-------------|------------------------------- |
+|  -1         | Sensor is to cold `>= -30`     |
+|   1         | Sensor is to hot  `<= 80 `     |
+|   2         | Total sensor failure when init |
+|   3         | AK09916 / I2C MASTER FAIL INIT |
+|   4         | HEAP alloc fail dma is not run |
+|   0         | Sensor is good to go           |
+> [!WARNING]
+> make sure you properly restart or block the code if you ecounter 
+> 2, 3, 4 error or your esp will error (this will be fix in future update)
+
+```C++
+(int)begin();
+```
+
+### SENSOR OPERATION
+
+#### clear interupt
+```C++
+(void)clear_int();  
+```
+>[!TIP]
+> its recomend to put any update that inside interupt IRAM ATTR before clear_int()
+
+### SENSOR READ
+#### to read data from ICM sensor
+```C++
+(void)sensor_read();
+```
+#### to get the data from buffer
+``` C++
+  xyzFloat acc;
+  xyzFloat gyr;
+  xyzFloat mag;
+
+  (void)get_acc_raw(&acc); // to get acc data
+  (void)get_gyro_raw(&gyr); // to get gyr data
+  (void)get_magneto_raw(&mag); // to get mag data
+
+```
+```C++
+acc.x // to get x value
+acc.y // to get y value
+acc.z // to get z value
+```
+```C++
+(float)get_temperature() // tp get icm temperature sensor
+```
