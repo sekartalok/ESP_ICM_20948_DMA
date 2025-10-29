@@ -73,6 +73,8 @@ set_acc_dlpf(ICM20948_DLPF_7);
 > the data divider will be lock to disable if you turn off the DLPF
 ##### set data rate divider
 
+![alt text](quicklatex.com-30bd3464d130620ec59757d10947b7e5_l3-1.svg)
+
 
 
 
