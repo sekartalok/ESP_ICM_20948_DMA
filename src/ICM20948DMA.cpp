@@ -5,6 +5,35 @@ ICM20948_DMA::ICM20948_DMA(int scl,int ado,int sda,int cs): scl_pin(scl), ado_pi
     digitalWrite(cs_pin, HIGH);
 
     SPI = new SPIClass(1);
+
+    DMASPI = new ESP32DMASPI::Master();
+    dma_tx_buf_read = DMASPI->allocDMABuffer(24);
+    dma_rx_buf_read = DMASPI->allocDMABuffer(24);
+
+    dma_tx_buf_int = DMASPI->allocDMABuffer(8);
+    dma_rx_buf_int = DMASPI->allocDMABuffer(8);
+
+
+    uint8_t reg = 0x2D | 0x80;
+    dma_tx_buf_read[0] =reg;
+    int i = 1;
+    while (i <= 20){
+        dma_tx_buf_read[i] = 0x00;
+        i++;
+    }
+
+    dma_tx_buf_int[0] = 0x17 | 0x80;
+    dma_tx_buf_int[1] = 0x00;
+
+    dma_tx_buf_int[2] =  0x19| 0x80;
+    dma_tx_buf_int[3] = 0x00;
+
+
+    dma_tx_buf_int[4] =  0x1A | 0x80;
+    dma_tx_buf_int[5] = 0x00;
+
+
+
 }
 
 // Destructor
@@ -21,13 +50,13 @@ ICM20948_DMA::~ICM20948_DMA() {
         delete DMASPI;   
         DMASPI = nullptr;
     }
-    if (dma_tx_buf) {
-        heap_caps_free(dma_tx_buf);
-        dma_tx_buf = nullptr;
+    if (dma_tx_buf_read) {
+        heap_caps_free(dma_tx_buf_read);
+        dma_tx_buf_read = nullptr;
     }
-    if (dma_rx_buf) {
-        heap_caps_free(dma_rx_buf);
-        dma_rx_buf = nullptr;
+    if (dma_rx_buf_read) {
+        heap_caps_free(dma_rx_buf_read);
+        dma_rx_buf_read = nullptr;
     }
 }
 //switch bank
@@ -149,10 +178,12 @@ uint16_t ICM20948_DMA::read16(uint8_t bank, uint8_t reg){
 
 void ICM20948_DMA::spi_dma(size_t size){
     size_t lenght = (size + 3) & ~0x03;// 4byte is missing SPI SLAVE
-    DMASPI->queue(dma_tx_buf, dma_rx_buf, lenght);
+    DMASPI->queue(dma_tx_buf_read, dma_rx_buf_read, lenght);
     DMASPI->trigger();
 
 }
+//PWR CTRL
+
 //PWR CTRL
 void ICM20948_DMA::sleep(bool con){
     uint8_t temp = read8(0,0x06);
@@ -249,14 +280,23 @@ int ICM20948_DMA::begin(){
         end();
         return 4;
     }
-    if(!dma_rx_buf){
+    if(!dma_rx_buf_read){
         end();
         return 4;
     }
-    if(!dma_tx_buf){
+    if(!dma_tx_buf_read){
         end();
         return 4;
     }
+    if(!dma_rx_buf_int){
+        end();
+        return 4;
+    }
+    if(!dma_tx_buf_int){
+        end();
+        return 4;
+    }
+
 
     //check temperture ideal working condition
     float temperture;
@@ -272,61 +312,69 @@ int ICM20948_DMA::begin(){
 
     return 0;
 }
-
-
-
-void ICM20948_DMA::end(){
-    spi_setting = SPISettings();
-    if(SPI){
-        delay(50);
-        SPI->end();
-        delete SPI;
-        SPI =nullptr;
-        delay(10);
-    } 
-   delay(50);
+int ICM20948_DMA::recycle(){
+    delay(50);
+    unsigned long start_millis= millis();
 
     if (DMASPI) {
         DMASPI->end();   
         delete DMASPI;   
         DMASPI = nullptr;
     }
-    if (dma_tx_buf) {
-        heap_caps_free(dma_tx_buf);
-        dma_tx_buf = nullptr;
+    Serial.println(millis()-start_millis);
+    
+
+    pinMode(cs_pin, OUTPUT);
+    digitalWrite(cs_pin, HIGH);
+    delayMicroseconds(5);
+    digitalWrite(cs_pin, LOW);
+    delayMicroseconds(5);
+    digitalWrite(cs_pin, HIGH);
+    delay(50);   
+    return begin();
+}
+
+
+void ICM20948_DMA::end(){
+    if (DMASPI) {
+        DMASPI->end();   
+        delete DMASPI;   
+        DMASPI = nullptr;
     }
-    if (dma_rx_buf) {
-        heap_caps_free(dma_rx_buf);
-        dma_rx_buf = nullptr;
-    }
+    spi_setting = SPISettings();
+    SPI->end();
+      
+    pinMode(cs_pin, OUTPUT);
+    digitalWrite(cs_pin, HIGH);
+    delayMicroseconds(5);
+    digitalWrite(cs_pin, LOW);
+    delayMicroseconds(5);
+    digitalWrite(cs_pin, HIGH);
+    delay(50);   
 }
 //DMA ENABLE 
 void ICM20948_DMA::enable_dma(){
     //disable the SPI
 
     spi_setting = SPISettings();
-    if(SPI){
-        delay(50);
-        SPI->end();
-        delete SPI;
-        SPI =nullptr;
-        delay(10);
-    }
-
     delay(50);
-
+    SPI->end();
+      
+    delay(50);
     
     digitalWrite(cs_pin, HIGH);
-    DMASPI = new ESP32DMASPI::Master();
+    
+    if(!DMASPI){
+        DMASPI = new ESP32DMASPI::Master();
+    }
+    
     DMASPI->begin(HSPI, scl_pin, ado_pin, sda_pin, cs_pin);
-    dma_tx_buf = DMASPI->allocDMABuffer(400);
-    dma_rx_buf = DMASPI->allocDMABuffer(400);
-
+  
     delay(10);
 
     DMASPI->setDataMode(SPI_MODE0);
     DMASPI->setFrequency(1000000);  
-    DMASPI->setMaxTransferSize(400);
+    DMASPI->setMaxTransferSize(24);
     DMASPI->setQueueSize(1);
 
     delay(10);
@@ -522,20 +570,11 @@ void ICM20948_DMA::gyr_data_divider(uint8_t data){
 
 //DATA READ
 void ICM20948_DMA::read_all(){
-
-
-    uint8_t reg = 0x2D | 0x80;
-    dma_tx_buf[0] =reg;
-    int i = 1;
-    while (i <= 20){
-        dma_tx_buf[i] = 0x00;
-        i++;
-    }
     spi_dma(21);
 
-       i = 0;
+    int i = 0;
     while(i<20){
-        buffer[i] = dma_rx_buf[i+1];
+        buffer[i] = dma_rx_buf_read[i+1];
         i++;
     }
 
@@ -612,20 +651,10 @@ void ICM20948_DMA:: enable_data_ready(){
 void ICM20948_DMA:: clear_int(){
     
     size_t aligned_len;
-    dma_tx_buf[0] = 0x17 | 0x80;
-    dma_tx_buf[1] = 0x00;
-
-    dma_tx_buf[2] =  0x19| 0x80;
-    dma_tx_buf[3] = 0x00;
-
-
-    dma_tx_buf[4] =  0x1A | 0x80;
-    dma_tx_buf[5] = 0x00;
-
     aligned_len = (6 + 3) & ~0x03; // 4byte is missing SPI SLAVE
 
 
-    DMASPI->queue(dma_tx_buf, NULL , aligned_len);
+    DMASPI->queue(dma_tx_buf_int, NULL , aligned_len);
     DMASPI->trigger();
 }
 

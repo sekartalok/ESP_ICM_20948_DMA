@@ -365,6 +365,12 @@ public:
             ESP_LOGW(TAG, "spi_master_task already terminated");
             return;
         }
+
+        //dummy to ping the spi_task_handle
+    
+        (void)queue(NULL,NULL,0);
+        (void)trigger();
+
         xTaskNotifyGive(this->spi_task_handle);
         if (xTaskNotifyWait(0, 0, NULL, pdMS_TO_TICKS(5000)) != pdTRUE) {
             ESP_LOGW(TAG, "timeout waiting for the termination of spi_master_task");

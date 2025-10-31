@@ -65,8 +65,11 @@ private:
 
     //DMA SPI
     ESP32DMASPI::Master * DMASPI;
-    uint8_t *dma_tx_buf{nullptr};
-    uint8_t *dma_rx_buf{nullptr};
+    uint8_t *dma_tx_buf_read{nullptr};
+    uint8_t *dma_rx_buf_read{nullptr};
+    uint8_t *dma_tx_buf_int{nullptr};
+    uint8_t *dma_rx_buf_int{nullptr};
+
 
     //SPI BLOCKING
     SPIClass * SPI;
@@ -209,7 +212,9 @@ public:
 
 
     int begin();
+    int recycle();
     void end();
+
 
 
 
